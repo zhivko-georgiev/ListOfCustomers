@@ -12,7 +12,7 @@ import javafx.beans.property.SimpleStringProperty;
 public class Customer {
 
 	private final SimpleStringProperty name;
-	private final SimpleStringProperty town;
+	private final SimpleObjectProperty<City> town;
 	private final SimpleObjectProperty<LocalDate> contractSignDate;
 	private final SimpleStringProperty notes;
 	private final SimpleStringProperty contract;
@@ -21,13 +21,13 @@ public class Customer {
 	public Customer(String name, String... params) {
 		this.name = new SimpleStringProperty(name);
 
-		String town = params.length > 0 ? params[0] : null;
+		City town = params.length > 0 ? City.valueOf(params[0]) : null;
 		String contractSignDate = params.length > 1 ? params[1] : LocalDate.now().toString();
 		String notes = params.length > 2 ? params[2] : null;
 		String contract = params.length > 3 ? params[3] : null;
 		String logo = params.length > 4 ? params[4] : null;
 
-		this.town = new SimpleStringProperty(town);
+		this.town = new SimpleObjectProperty<City>(town);
 		this.contractSignDate = new SimpleObjectProperty<LocalDate>(DateUtil.parse(contractSignDate));
 		this.notes = new SimpleStringProperty(notes);
 		this.contract = new SimpleStringProperty(contract);
@@ -50,15 +50,15 @@ public class Customer {
 		return name;
 	}
 
-	public String getTown() {
+	public City getTown() {
 		return town.get();
 	}
 
-	public void setTown(String town) {
+	public void setTown(City town) {
 		this.town.set(town);
 	}
 
-	public SimpleStringProperty townProperty() {
+	public SimpleObjectProperty<City> townProperty() {
 		return town;
 	}
 

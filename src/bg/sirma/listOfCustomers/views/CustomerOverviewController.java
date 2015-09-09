@@ -10,6 +10,7 @@ import javafx.scene.control.TableView;
 import java.time.LocalDate;
 
 import bg.sirma.listOfCustomers.MainApp;
+import bg.sirma.listOfCustomers.models.City;
 import bg.sirma.listOfCustomers.models.Customer;
 import bg.sirma.listOfCustomers.utils.DateUtil;
 
@@ -19,7 +20,7 @@ public class CustomerOverviewController {
     @FXML
     private TableColumn<Customer, String> nameColumn;
     @FXML
-    private TableColumn<Customer, String> townColumn;
+    private TableColumn<Customer, City> townColumn;
     @FXML
     private TableColumn<Customer, LocalDate> contractSignDateColumn;
     @FXML
@@ -66,7 +67,7 @@ public class CustomerOverviewController {
     private void showCustomerDetails(Customer customer) {
         if (customer != null) {
             nameLabel.setText(customer.getName());
-            townLabel.setText(customer.getTown());
+            townLabel.setText(customer.getTown().toString());
             contractSignDateLabel.setText(DateUtil.format(customer.getContractSignDate()));
             notesLabel.setText(customer.getNotes());
             contractLabel.setText(customer.getContract());

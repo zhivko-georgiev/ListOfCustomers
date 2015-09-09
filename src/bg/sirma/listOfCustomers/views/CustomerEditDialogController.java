@@ -1,9 +1,13 @@
 package bg.sirma.listOfCustomers.views;
 
+import bg.sirma.listOfCustomers.models.City;
 import bg.sirma.listOfCustomers.models.Customer;
 import bg.sirma.listOfCustomers.utils.DateUtil;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -13,7 +17,7 @@ public class CustomerEditDialogController {
     @FXML
     private TextField nameField;
     @FXML
-    private TextField townField;
+    private ComboBox<City> townField;
     @FXML
     private TextField contractSignDateField;
     @FXML
@@ -29,6 +33,8 @@ public class CustomerEditDialogController {
 
     @FXML
     private void initialize() {
+    	ObservableList<City> cities = FXCollections.observableArrayList(City.values());
+    	townField.setItems(cities);
     }
 
     public void setDialogStage(Stage dialogStage) {
@@ -40,7 +46,7 @@ public class CustomerEditDialogController {
         this.customer = customer;
 
         nameField.setText(customer.getName());
-        townField.setText(customer.getTown());
+        townField.getSelectionModel().select(customer.getTown());
         contractSignDateField.setText(DateUtil.format(customer.getContractSignDate()));
         notesField.setText(customer.getNotes());
         contractField.setText(customer.getContract());
@@ -55,7 +61,7 @@ public class CustomerEditDialogController {
     private void handleOk() {
         if (isInputValid()) {
             customer.setName(nameField.getText());
-            customer.setTown(townField.getText());
+            customer.setTown(townField.getSelectionModel().getSelectedItem());
             customer.setContractSignDate(DateUtil.parse(contractSignDateField.getText()));
             customer.setNotes(notesField.getText());
             customer.setContract(contractField.getText());
@@ -77,7 +83,7 @@ public class CustomerEditDialogController {
         if (nameField.getText() == null || nameField.getText().length() == 0) {
             errorMessage += "No valid name!\n"; 
         }
-        if (townField.getText() == null || townField.getText().length() == 0) {
+        if (townField.getSelectionModel().getSelectedItem().toString() == null || townField.getSelectionModel().getSelectedItem().toString().length() == 0) {
             errorMessage += "No valid town name!\n"; 
         }
         if (contractSignDateField.getText() == null || contractSignDateField.getText().length() == 0) {

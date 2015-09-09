@@ -28,7 +28,7 @@
             <Label text="Договор" GridPane.rowIndex="4" />
             <Label text="Лого" GridPane.rowIndex="5" />
             <TextField fx:id="nameField" GridPane.columnIndex="1" />
-            <TextField fx:id="townField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <ComboBox fx:id="townField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <TextField fx:id="contractSignDateField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <TextField fx:id="notesField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
