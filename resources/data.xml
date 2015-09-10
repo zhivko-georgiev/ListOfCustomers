@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<customers>
+    <customer>
+        <contract>C:\Users\zgeorgiev\Desktop\download.jpg</contract>
+        <contractSignDate>12.12.2014</contractSignDate>
+        <logo>C:\Users\zgeorgiev\Desktop\download.jpg</logo>
+        <name>Сирма АД</name>
+        <notes>Ние сме номер 1!</notes>
+        <town>Варна</town>
+    </customer>
+    <customer>
+        <contract>C:\Users\zgeorgiev\Desktop\download.jpg</contract>
+        <contractSignDate>23.06.1999</contractSignDate>
+        <logo>C:\Users\zgeorgiev\Desktop\download.jpg</logo>
+        <name>Сирма АД</name>
+        <notes>Ние сме номер 1!</notes>
+        <town>Пловдив</town>
+    </customer>
+    <customer>
+        <contract>C:\Users\zgeorgiev\Desktop\download.jpg</contract>
+        <contractSignDate>23.06.1999</contractSignDate>
+        <logo>C:\Users\zgeorgiev\Desktop\download.jpg</logo>
+        <name>Сирма АД</name>
+        <notes>Опа</notes>
+        <town>Бургас</town>
+    </customer>
+</customers>

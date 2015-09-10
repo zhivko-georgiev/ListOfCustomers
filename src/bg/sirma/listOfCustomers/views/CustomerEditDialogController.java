@@ -1,16 +1,21 @@
 package bg.sirma.listOfCustomers.views;
 
+import java.awt.Choice;
+
 import bg.sirma.listOfCustomers.models.City;
 import bg.sirma.listOfCustomers.models.Customer;
 import bg.sirma.listOfCustomers.utils.DateUtil;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 public class CustomerEditDialogController {
@@ -35,6 +40,28 @@ public class CustomerEditDialogController {
     private void initialize() {
     	ObservableList<City> cities = FXCollections.observableArrayList(City.values());
     	townField.setItems(cities);
+    	
+    	townField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            public void handle(KeyEvent ke) {
+                String keyPressed = ke.getText();
+                switch (keyPressed) {
+				case "1":
+					townField.getSelectionModel().select(City.София);
+					break;
+				case "2":
+					townField.getSelectionModel().select(City.Пловдив);
+					break;
+				case "3":
+					townField.getSelectionModel().select(City.Варна);
+					break;
+				case "4":
+					townField.getSelectionModel().select(City.Бургас);
+					break;
+				default:
+					break;
+				}
+            }
+        });
     }
 
     public void setDialogStage(Stage dialogStage) {
