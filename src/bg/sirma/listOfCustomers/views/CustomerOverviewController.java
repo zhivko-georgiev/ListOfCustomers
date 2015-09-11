@@ -1,18 +1,19 @@
 package bg.sirma.listOfCustomers.views;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-
 import java.time.LocalDate;
 
 import bg.sirma.listOfCustomers.MainApp;
 import bg.sirma.listOfCustomers.models.City;
 import bg.sirma.listOfCustomers.models.Customer;
 import bg.sirma.listOfCustomers.utils.DateUtil;
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class CustomerOverviewController {
     @FXML
@@ -37,7 +38,7 @@ public class CustomerOverviewController {
     @FXML
     private Label contractLabel;
     @FXML
-    private Label logoLabel;
+    private ImageView logoImage;
 
     private MainApp mainApp;
 
@@ -71,14 +72,14 @@ public class CustomerOverviewController {
             contractSignDateLabel.setText(DateUtil.format(customer.getContractSignDate()));
             notesLabel.setText(customer.getNotes());
             contractLabel.setText(customer.getContract());
-            logoLabel.setText(customer.getLogo());
+            logoImage.setImage(new Image(customer.getLogo()));
         } else {
             nameLabel.setText("");
             townLabel.setText("");
             contractSignDateLabel.setText("");
             notesLabel.setText("");
             contractLabel.setText("");
-            logoLabel.setText("");
+            logoImage.setImage(new Image("file:resources/images/No-Logo-Available.png"));
         }
     }
     
