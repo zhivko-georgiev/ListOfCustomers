@@ -1,8 +1,8 @@
 package bg.sirma.listOfCustomers.models;
 
 public enum City {
-	София,
-	Пловдив,
-	Варна,
-	Бургас;
+	РЎРѕС„РёСЏ,
+	РџР»РѕРІРґРёРІ,
+	Р’Р°СЂРЅР°,
+	Р‘СѓСЂРіР°СЃ;
 }

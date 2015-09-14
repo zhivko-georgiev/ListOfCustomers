@@ -10,6 +10,7 @@ import javax.xml.bind.Unmarshaller;
 
 import bg.sirma.listOfCustomers.models.Customer;
 import bg.sirma.listOfCustomers.models.CustomerListWrapper;
+import bg.sirma.listOfCustomers.utils.AlertUtil;
 import bg.sirma.listOfCustomers.views.CustomerEditDialogController;
 import bg.sirma.listOfCustomers.views.CustomerOverviewController;
 import bg.sirma.listOfCustomers.views.RootLayoutController;
@@ -18,8 +19,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -27,23 +26,30 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class MainApp extends Application {
+	private static final String APP_TITLE = "–°–ø–∏—Å—ä–∫ —Å –ö–ª–∏–µ–Ω—Ç–∏";
+	private static final String EDIT_DIALOG_TITLE = "–†–µ–¥–∞–∫—Ç–∏—Ä–∞–π –ö–ª–∏–µ–Ω—Ç";
 
 	private Stage primaryStage;
 	private BorderPane rootLayout;
 
 	private ObservableList<Customer> customersData = FXCollections.observableArrayList();
 
-	public MainApp() {
-	}
-
 	public ObservableList<Customer> getCustomerData() {
 		return customersData;
+	}
+
+	public Stage getPrimaryStage() {
+		return primaryStage;
+	}
+
+	public static void main(String[] args) {
+		launch(args);
 	}
 
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
-		this.primaryStage.setTitle("—ÔËÒ˙Í Ò ÍÎËÂÌÚË - Desktop App");
+		this.primaryStage.setTitle(APP_TITLE);
 
 		this.primaryStage.getIcons().add(new Image("file:resources/images/address_book_32.png"));
 
@@ -98,39 +104,25 @@ public class MainApp extends Application {
 		}
 	}
 
-	/**
-	 * Opens a dialog to edit details for the specified person. If the user
-	 * clicks OK, the changes are saved into the provided person object and true
-	 * is returned.
-	 * 
-	 * @param customer
-	 *            the person object to be edited
-	 * @return true if the user clicked OK, false otherwise.
-	 */
 	public boolean showCustomerEditDialog(Customer customer) {
 		try {
-			// Load the fxml file and create a new stage for the popup dialog.
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(MainApp.class.getResource("views/CustomerEditDialog.fxml"));
 			AnchorPane page = (AnchorPane) loader.load();
 
-			// Create the dialog Stage.
 			Stage dialogStage = new Stage();
-			dialogStage.setTitle("–Â‰‡ÍÚË‡È  ÎËÂÌÚ");
+			dialogStage.setTitle(EDIT_DIALOG_TITLE);
 			dialogStage.initModality(Modality.WINDOW_MODAL);
 			dialogStage.initOwner(primaryStage);
 			Scene scene = new Scene(page);
 			dialogStage.setScene(scene);
 
-			// Set the person into the controller.
 			CustomerEditDialogController controller = loader.getController();
 			controller.setDialogStage(dialogStage);
 			controller.setCustomer(customer);
 
-			// Set the dialog icon.
 			dialogStage.getIcons().add(new Image("file:resources/images/edit.png"));
 
-			// Show the dialog and wait until the user closes it
 			dialogStage.showAndWait();
 
 			return controller.isOkClicked();
@@ -140,13 +132,6 @@ public class MainApp extends Application {
 		}
 	}
 
-	/**
-	 * Returns the person file preference, i.e. the file that was last opened.
-	 * The preference is read from the OS specific registry. If no such
-	 * preference can be found, null is returned.
-	 * 
-	 * @return
-	 */
 	public File getCustomerFilePath() {
 		Preferences prefs = Preferences.userNodeForPackage(MainApp.class);
 		String filePath = prefs.get("filePath", null);
@@ -157,98 +142,54 @@ public class MainApp extends Application {
 		}
 	}
 
-	/**
-	 * Sets the file path of the currently loaded file. The path is persisted in
-	 * the OS specific registry.
-	 * 
-	 * @param file
-	 *            the file or null to remove the path
-	 */
 	public void setCustomerFilePath(File file) {
 		Preferences prefs = Preferences.userNodeForPackage(MainApp.class);
 		if (file != null) {
 			prefs.put("filePath", file.getPath());
 
 			// Update the stage title.
-			primaryStage.setTitle("—ÔËÒ˙Í Ò ÍÎËÂÌÚË - " + file.getName());
+			primaryStage.setTitle(APP_TITLE + " - " + file.getName());
 		} else {
 			prefs.remove("filePath");
 
 			// Update the stage title.
-			primaryStage.setTitle("—ÔËÒ˙Í Ò ÍÎËÂÌÚË - Desktop App");
+			primaryStage.setTitle(APP_TITLE);
 		}
 	}
 
-	/**
-	 * Loads person data from the specified file. The current person data will
-	 * be replaced.
-	 * 
-	 * @param file
-	 */
 	public void loadCustomerDataFromFile(File file) {
 		try {
 			JAXBContext context = JAXBContext.newInstance(CustomerListWrapper.class);
 			Unmarshaller um = context.createUnmarshaller();
 
-			// Reading XML from the file and unmarshalling.
 			CustomerListWrapper wrapper = (CustomerListWrapper) um.unmarshal(file);
 
 			customersData.clear();
 			customersData.addAll(wrapper.getCustomers());
 
-			// Save the file path to the registry.
 			setCustomerFilePath(file);
 
-		} catch (Exception e) { // catches ANY exception
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setTitle("Error");
-			alert.setHeaderText("Could not load data");
-			alert.setContentText("Could not load data from file:\n" + file.getPath());
-
-			alert.showAndWait();
+		} catch (Exception e) {
+			String errorMessage = "–ù–µ –º–æ–∂–µ –¥–∞ —Å–µ –∑–∞—Ä–µ–¥–∏ –∏–Ω—Ñ–æ—Ä–º–∞—Ü–∏—è –æ—Ç —Ñ–∞–π–ª.";
+			AlertUtil.errorAlertFile(errorMessage, file.getPath());
 		}
 	}
 
-	/**
-	 * Saves the current person data to the specified file.
-	 * 
-	 * @param file
-	 */
 	public void saveCustomerDataToFile(File file) {
 		try {
 			JAXBContext context = JAXBContext.newInstance(CustomerListWrapper.class);
 			Marshaller m = context.createMarshaller();
 			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-			// Wrapping our person data.
 			CustomerListWrapper wrapper = new CustomerListWrapper();
 			wrapper.setCustomers(customersData);
 
-			// Marshalling and saving XML to the file.
 			m.marshal(wrapper, file);
 
-			// Save the file path to the registry.
 			setCustomerFilePath(file);
-		} catch (Exception e) { // catches ANY exception
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setTitle("Error");
-			alert.setHeaderText("Could not save data");
-			alert.setContentText("Could not save data to file:\n" + file.getPath());
-
-			alert.showAndWait();
+		} catch (Exception e) { 
+			String errorMessage = "–ù–µ –º–æ–∂–µ –¥–∞ —Å–µ –∑–∞–ø–∏—à–µ –∏–Ω—Ñ–æ—Ä–º–∞—Ü–∏—è –≤—ä–≤ —Ñ–∞–π–ª.";
+			AlertUtil.errorAlertFile(errorMessage, file.getPath());
 		}
-	}
-
-	/**
-	 * Returns the main stage.
-	 * 
-	 * @return
-	 */
-	public Stage getPrimaryStage() {
-		return primaryStage;
-	}
-
-	public static void main(String[] args) {
-		launch(args);
 	}
 }

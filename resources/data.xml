@@ -11,7 +11,7 @@
     <customer>
         <contract>C:\Users\zgeorgiev\Desktop\download.jpg</contract>
         <contractSignDate>23.06.1999</contractSignDate>
-        <logo>file:C:/Users/zgeorgiev/Pictures/Untitled.jpg</logo>
+        <logo>file:/D:/Zhivko/Eclipse%20Workspace/listofcustomerfxml/resources/images/mountain-bike.jpeg</logo>
         <name>Сирма АД</name>
         <notes>Ние сме номер 1!</notes>
         <town>Пловдив</town>
@@ -19,7 +19,7 @@
     <customer>
         <contract>C:\Users\zgeorgiev\Desktop\download.jpg</contract>
         <contractSignDate>23.06.1999</contractSignDate>
-        <logo>file:P:/ListOfCustomers-DesktopApp/resources/images/mountain-bike.jpeg</logo>
+        <logo>file:/D:/Zhivko/Eclipse%20Workspace/listofcustomerfxml/resources/images/mountain-bike.jpeg</logo>
         <name>Сирма АД</name>
         <notes>Опа</notes>
         <town>Бургас</town>
@@ -27,7 +27,7 @@
     <customer>
         <contract>Ко стаа</contract>
         <contractSignDate>23.10.2015</contractSignDate>
-         <logo>file:P:/ListOfCustomers-DesktopApp/resources/images/mountain-bike.jpeg</logo>
+        <logo>file:P:/ListOfCustomers-DesktopApp/resources/images/mountain-bike.jpeg</logo>
         <name>Quality House EAD</name>
         <notes>Опа опа опа</notes>
         <town>Пловдив</town>
