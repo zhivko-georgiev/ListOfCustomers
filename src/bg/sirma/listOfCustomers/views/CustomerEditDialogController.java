@@ -3,8 +3,8 @@ package bg.sirma.listOfCustomers.views;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
 
 import bg.sirma.listOfCustomers.models.City;
 import bg.sirma.listOfCustomers.models.Customer;
@@ -13,16 +13,16 @@ import bg.sirma.listOfCustomers.utils.DateUtil;
 import bg.sirma.listOfCustomers.utils.FileUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
+import javafx.collections.ObservableMap;
+import javafx.collections.ObservableSet;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -36,16 +36,19 @@ public class CustomerEditDialogController {
 	@FXML
 	private TextField contractSignDateField;
 	@FXML
-	private TextArea notesField;
+	private TextField notesField;
 	@FXML
-	private TextField contractField;
+	private Hyperlink contractField;
+	@FXML
+	private Button contractFileChooserButton;
 	@FXML
 	private Button logoFileChooserButton;
 	@FXML
 	private ImageView customerEditDialogLogo;
 
-	private Set<String> namesSet = new HashSet<>();
-
+	private ObservableSet<String> namesSet = FXCollections.observableSet(new HashSet<>());
+	private ObservableMap<String, String> contractsMap = FXCollections.observableMap(new HashMap<>());
+	
 	private Stage dialogStage;
 	private Customer customer;
 	private boolean okClicked = false;
@@ -55,59 +58,72 @@ public class CustomerEditDialogController {
 		ObservableList<City> cities = FXCollections.observableArrayList(City.values());
 		townField.setItems(cities);
 
-		townField.setOnKeyPressed(new EventHandler<KeyEvent>() {
-			@Override
-			public void handle(KeyEvent ke) {
-				String keyPressed = ke.getText();
-				switch (keyPressed) {
-				case "1":
-					townField.getSelectionModel().select(City.София);
-					break;
-				case "2":
-					townField.getSelectionModel().select(City.Пловдив);
-					break;
-				case "3":
-					townField.getSelectionModel().select(City.Варна);
-					break;
-				case "4":
-					townField.getSelectionModel().select(City.Бургас);
-					break;
-				default:
-					break;
-				}
+		townField.setOnKeyPressed((event) -> {
+			String keyPressed = event.getText();
+			switch (keyPressed) {
+			case "1":
+				townField.getSelectionModel().select(City.София);
+				break;
+			case "2":
+				townField.getSelectionModel().select(City.Пловдив);
+				break;
+			case "3":
+				townField.getSelectionModel().select(City.Варна);
+				break;
+			case "4":
+				townField.getSelectionModel().select(City.Бургас);
+				break;
+			default:
+				break;
 			}
 		});
 
-		logoFileChooserButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				handleChooseLogoFile();
-			}
+		logoFileChooserButton.setOnMouseClicked((event) -> {
+			handleChooseLogoFile();
 		});
 
-		customerEditDialogLogo.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				try {
-					String imageUrl = FileUtil.parseFilePath(customer.getLogo());
-					String noLogoUrl = FileUtil.parseFilePath(NO_LOGO_IMAGE);
-					
-					if (FileUtil.fileExists(customer.getLogo())) {
-						if (!imageUrl.contains("No-Logo-Available.png")) {
-							Desktop.getDesktop().open(new File(imageUrl));
-						} else {
-							Desktop.getDesktop().open(new File(noLogoUrl));
-						}
+		contractFileChooserButton.setOnMouseClicked((event) -> {
+			handleChooseContractFile();
+		});
+
+		customerEditDialogLogo.setOnMouseClicked((event) -> {
+			try {
+				String imageUrl = FileUtil.parseFilePath(customer.getLogo());
+				String noLogoUrl = FileUtil.parseFilePath(NO_LOGO_IMAGE);
+
+				if (FileUtil.fileExists(customer.getLogo())) {
+					if (!imageUrl.contains("No-Logo-Available.png")) {
+						Desktop.getDesktop().open(new File(imageUrl));
 					} else {
 						Desktop.getDesktop().open(new File(noLogoUrl));
 					}
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				} else {
+					Desktop.getDesktop().open(new File(noLogoUrl));
 				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		});
 
+		contractField.setOnAction((event) -> {
+			try {
+				String contract = customer.getContract();
+				String contractFilePath = contractsMap.get(contract);
+				System.out.println(contractsMap);
+
+				System.out.println(contract);
+				System.out.println(contractFilePath);
+				System.out.println(FileUtil.fileExists(contractFilePath));
+
+				if (FileUtil.fileExists(contractFilePath)) {
+					Desktop.getDesktop().open(new File(contractFilePath));
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		});
 	}
 
 	public void setDialogStage(Stage dialogStage) {
@@ -122,6 +138,9 @@ public class CustomerEditDialogController {
 		townField.getSelectionModel().select(customer.getTown());
 		contractSignDateField.setText(DateUtil.format(customer.getContractSignDate()));
 		notesField.setText(customer.getNotes());
+		if (customer.getContract() != null) {
+			contractFileChooserButton.setVisible(false);
+		}
 		contractField.setText(customer.getContract());
 
 		if (customer.getLogo() != null && FileUtil.fileExists(customer.getLogo())) {
@@ -139,6 +158,7 @@ public class CustomerEditDialogController {
 	private void handleOk() {
 		if (isInputValid()) {
 			customer.setName(nameField.getText());
+			namesSet.add(nameField.getText());
 
 			if (townField.getSelectionModel() != null) {
 				customer.setTown(townField.getSelectionModel().getSelectedItem());
@@ -199,7 +219,7 @@ public class CustomerEditDialogController {
 		}
 
 		// Date of Signing the contract Validation
-		if (!DateUtil.validDate(contractSignDate) && !contractSignDate.equals("")) {
+		if (contractSignDate != null && !DateUtil.validDate(contractSignDate) && !contractSignDate.equals("")) {
 			errorMessage += "Невалидна дата. Използвайте формат дд.мм.гггг!\n";
 		}
 
@@ -227,6 +247,24 @@ public class CustomerEditDialogController {
 			customerEditDialogLogo.setImage(new Image(file.toURI().toString()));
 			logoFileChooserButton.setText(file.toURI().toString());
 			logoFileChooserButton.setVisible(false);
+		}
+	}
+
+	@FXML
+	private void handleChooseContractFile() {
+		FileChooser fileChooser = new FileChooser();
+
+		File file = fileChooser.showOpenDialog(dialogStage);
+
+		if (file != null) {
+			String contractName = FileUtil.getContractName(file.toURI().toString());
+			String contractFilePath = FileUtil.parseFilePath(file.toURI().toString());
+
+			this.contractsMap.put(contractName, contractFilePath);
+
+			contractField.setText(contractName);
+			contractField.setAlignment(Pos.CENTER);
+			contractFileChooserButton.setVisible(false);
 		}
 	}
 }

@@ -40,4 +40,11 @@
         <notes>opa</notes>
         <town>Пловдив</town>
     </customer>
+    <customer>
+        <name>A</name>
+    </customer>
+    <customer>
+        <contract>readme_en</contract>
+        <name>A</name>
+    </customer>
 </customers>

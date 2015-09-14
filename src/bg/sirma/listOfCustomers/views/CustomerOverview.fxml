@@ -48,11 +48,11 @@
 								<Label text="Дата на подписване на договор" GridPane.rowIndex="2" />
 								<Label text="Бележки" GridPane.rowIndex="3" />
 								<Label text="Договор" GridPane.rowIndex="4" />
-								<Label fx:id="nameLabel" styleClass="label-bright" text="Label" GridPane.columnIndex="1" />
-								<Label fx:id="townLabel" styleClass="label-bright" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-								<Label fx:id="contractSignDateLabel" styleClass="label-bright" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-								<Label fx:id="notesLabel" styleClass="label-bright" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-								<Label fx:id="contractLabel" styleClass="label-bright" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+								<Label fx:id="nameLabel" styleClass="label-bright" GridPane.columnIndex="1" />
+								<Label fx:id="townLabel" styleClass="label-bright" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+								<Label fx:id="contractSignDateLabel" styleClass="label-bright" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+								<Label fx:id="notesLabel" styleClass="label-bright" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+								<Label fx:id="contractLabel" styleClass="label-bright" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 							</children>
 						</GridPane>
 						<ButtonBar layoutX="54.0" layoutY="250.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0">

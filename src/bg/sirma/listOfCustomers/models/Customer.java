@@ -10,7 +10,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 public class Customer {
-
 	private final SimpleStringProperty name;
 	private final SimpleObjectProperty<City> town;
 	private final SimpleObjectProperty<LocalDate> contractSignDate;

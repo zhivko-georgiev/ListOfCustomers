@@ -22,6 +22,17 @@ public class FileUtil {
 		return trimFilePath(filepath);
 	}
 	
+	public static String getContractName(String filename) {
+		int startIndex = filename.lastIndexOf('/');
+		int lastIndex = filename.lastIndexOf('.');
+		
+		String extractedFileName = filename.substring(startIndex + 1 , lastIndex);
+		
+		extractedFileName = extractedFileName.replace("%20", " ");
+		
+		return extractedFileName;
+	}
+	
 	private static String trimFilePath(String filepath) {
 		String trimmedFielPath = filepath.substring(5, filepath.length());
 		

@@ -6,6 +6,7 @@ import bg.sirma.listOfCustomers.MainApp;
 import bg.sirma.listOfCustomers.models.City;
 import bg.sirma.listOfCustomers.models.Customer;
 import bg.sirma.listOfCustomers.utils.AlertUtil;
+import bg.sirma.listOfCustomers.utils.DateUtil;
 import bg.sirma.listOfCustomers.utils.FileUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -76,7 +77,7 @@ public class CustomerOverviewController {
 			}
 
 			if (customer.getContractSignDate() != null) {
-				contractSignDateLabel.setText(customer.getContractSignDate().toString());
+				contractSignDateLabel.setText(DateUtil.format(customer.getContractSignDate()));
 			} else {
 				contractSignDateLabel.setText("");
 			}
