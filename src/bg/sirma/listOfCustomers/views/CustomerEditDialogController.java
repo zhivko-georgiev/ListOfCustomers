@@ -39,11 +39,13 @@ public class CustomerEditDialogController {
 	@FXML
 	private Hyperlink contractField;
 	@FXML
-	private Button contractFileChooserButton;
+	private Button contractFileChooserBtn;
 	@FXML
-	private Button logoFileChooserButton;
+	private Button logoFileChooserBtn;
 	@FXML
 	private ImageView customerEditDialogLogo;
+	@FXML
+	private Button removeCurrentContractBtn;
 
 	private Stage dialogStage;
 	private Customer customer;
@@ -51,7 +53,7 @@ public class CustomerEditDialogController {
 
 	@FXML
 	private void initialize() {
-
+		removeCurrentContractBtn.setVisible(false);
 		ObservableList<City> cities = FXCollections.observableArrayList(City.values());
 		townField.setItems(cities);
 
@@ -75,11 +77,11 @@ public class CustomerEditDialogController {
 			}
 		});
 
-		logoFileChooserButton.setOnMouseClicked((event) -> {
+		logoFileChooserBtn.setOnMouseClicked((event) -> {
 			handleChooseLogoFile();
 		});
 
-		contractFileChooserButton.setOnMouseClicked((event) -> {
+		contractFileChooserBtn.setOnMouseClicked((event) -> {
 			handleChooseContractFile();
 		});
 
@@ -87,8 +89,7 @@ public class CustomerEditDialogController {
 			try {
 				String imageUrl = FileUtil.parseFilePath(customer.getLogo());
 				String noLogoUrl = FileUtil.parseFilePath(NO_LOGO_IMAGE);
-				System.out.println(imageUrl);
-
+				
 				if (FileUtil.fileExists(customer.getLogo())) {
 					if (!imageUrl.contains("No-Logo-Available.png")) {
 						Desktop.getDesktop().open(new File(imageUrl));
@@ -126,6 +127,17 @@ public class CustomerEditDialogController {
 				contractSignDateField.setText(DateUtil.format(customer.getContractSignDate()));
 			}
 		});
+
+		removeCurrentContractBtn.setOnMouseClicked((event) -> {
+			removeCurrentContract();
+		});
+	}
+
+	@FXML
+	private void removeCurrentContract() {
+		customer.setContract(null);
+		removeCurrentContractBtn.setVisible(false);
+		contractFileChooserBtn.setVisible(true);
 	}
 
 	public void setDialogStage(Stage dialogStage) {
@@ -138,11 +150,12 @@ public class CustomerEditDialogController {
 
 		nameField.setText(customer.getName());
 		townField.getSelectionModel().select(customer.getTown());
-		
+
 		contractSignDateField.setText(DateUtil.format(customer.getContractSignDate()));
 		notesField.setText(customer.getNotes());
 		if (customer.getContract() != null) {
-			contractFileChooserButton.setVisible(false);
+			contractFileChooserBtn.setVisible(false);
+			removeCurrentContractBtn.setVisible(true);
 		}
 		contractField.setText(ValidationUtil.getContractsmap().get(customer.getContract()));
 
@@ -178,8 +191,8 @@ public class CustomerEditDialogController {
 			// customer.setContract(contractField.getText());
 			// }
 
-			if (!logoFileChooserButton.getText().equalsIgnoreCase("Избери Лого")) {
-				customer.setLogo(logoFileChooserButton.getText());
+			if (!logoFileChooserBtn.getText().equalsIgnoreCase("Избери Лого")) {
+				customer.setLogo(logoFileChooserBtn.getText());
 			}
 
 			okClicked = true;
@@ -229,7 +242,6 @@ public class CustomerEditDialogController {
 			} else {
 				errorMessage += "Невалидна дата. Използвайте формат дд.мм.гггг!\n";
 			}
-			
 		}
 
 		if (errorMessage.length() == 0) {
@@ -254,8 +266,8 @@ public class CustomerEditDialogController {
 
 		if (file != null) {
 			customerEditDialogLogo.setImage(new Image(file.toURI().toString()));
-			logoFileChooserButton.setText(file.toURI().toString());
-			logoFileChooserButton.setVisible(false);
+			logoFileChooserBtn.setText(file.toURI().toString());
+			logoFileChooserBtn.setVisible(false);
 		}
 	}
 
@@ -274,7 +286,10 @@ public class CustomerEditDialogController {
 
 			contractField.setText(contractName);
 			contractField.setAlignment(Pos.CENTER);
-			contractFileChooserButton.setVisible(false);
+			
+			removeCurrentContractBtn.setVisible(true);
+			contractFileChooserBtn.setVisible(false);
+			
 		}
 	}
 }

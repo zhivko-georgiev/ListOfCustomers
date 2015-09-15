@@ -170,7 +170,10 @@ public class MainApp extends Application {
 			customersData.addAll(wrapper.getCustomers());
 			
 			for (Customer customer : customersData) {
-				ValidationUtil.getContractsmap().put(customer.getContract(), FileUtil.getContractName(customer.getContract()));
+				if (customer.getContract() != null) {
+					ValidationUtil.getContractsmap().put(customer.getContract(), FileUtil.getContractName(customer.getContract()));
+				}
+				
 				ValidationUtil.getNamesset().add(customer.getName());
 			}
 
