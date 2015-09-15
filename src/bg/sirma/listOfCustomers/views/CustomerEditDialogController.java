@@ -3,18 +3,16 @@ package bg.sirma.listOfCustomers.views;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.time.LocalDate;
 
 import bg.sirma.listOfCustomers.models.City;
 import bg.sirma.listOfCustomers.models.Customer;
 import bg.sirma.listOfCustomers.utils.AlertUtil;
 import bg.sirma.listOfCustomers.utils.DateUtil;
 import bg.sirma.listOfCustomers.utils.FileUtil;
+import bg.sirma.listOfCustomers.utils.ValidationUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
-import javafx.collections.ObservableSet;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -23,6 +21,7 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -46,15 +45,13 @@ public class CustomerEditDialogController {
 	@FXML
 	private ImageView customerEditDialogLogo;
 
-	private ObservableSet<String> namesSet = FXCollections.observableSet(new HashSet<>());
-	private ObservableMap<String, String> contractsMap = FXCollections.observableMap(new HashMap<>());
-	
 	private Stage dialogStage;
 	private Customer customer;
 	private boolean okClicked = false;
 
 	@FXML
 	private void initialize() {
+
 		ObservableList<City> cities = FXCollections.observableArrayList(City.values());
 		townField.setItems(cities);
 
@@ -90,6 +87,7 @@ public class CustomerEditDialogController {
 			try {
 				String imageUrl = FileUtil.parseFilePath(customer.getLogo());
 				String noLogoUrl = FileUtil.parseFilePath(NO_LOGO_IMAGE);
+				System.out.println(imageUrl);
 
 				if (FileUtil.fileExists(customer.getLogo())) {
 					if (!imageUrl.contains("No-Logo-Available.png")) {
@@ -108,20 +106,24 @@ public class CustomerEditDialogController {
 
 		contractField.setOnAction((event) -> {
 			try {
-				String contract = customer.getContract();
-				String contractFilePath = contractsMap.get(contract);
-				System.out.println(contractsMap);
+				String contractFilePath = customer.getContract();
 
-				System.out.println(contract);
-				System.out.println(contractFilePath);
-				System.out.println(FileUtil.fileExists(contractFilePath));
-
-				if (FileUtil.fileExists(contractFilePath)) {
-					Desktop.getDesktop().open(new File(contractFilePath));
-				}
+				Desktop.getDesktop().open(new File(contractFilePath));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			}
+		});
+
+		contractSignDateField.setOnKeyPressed((event) -> {
+			if (event.getCode() == KeyCode.DOWN && event.isControlDown()) {
+
+				customer.setContractSignDate(DateUtil.parse(contractSignDateField.getText()).plusDays(1));
+				contractSignDateField.setText(DateUtil.format(customer.getContractSignDate()));
+
+			} else if (event.getCode() == KeyCode.UP && event.isControlDown()) {
+				customer.setContractSignDate(DateUtil.parse(contractSignDateField.getText()).minusDays(1));
+				contractSignDateField.setText(DateUtil.format(customer.getContractSignDate()));
 			}
 		});
 	}
@@ -136,12 +138,13 @@ public class CustomerEditDialogController {
 
 		nameField.setText(customer.getName());
 		townField.getSelectionModel().select(customer.getTown());
+		
 		contractSignDateField.setText(DateUtil.format(customer.getContractSignDate()));
 		notesField.setText(customer.getNotes());
 		if (customer.getContract() != null) {
 			contractFileChooserButton.setVisible(false);
 		}
-		contractField.setText(customer.getContract());
+		contractField.setText(ValidationUtil.getContractsmap().get(customer.getContract()));
 
 		if (customer.getLogo() != null && FileUtil.fileExists(customer.getLogo())) {
 			customerEditDialogLogo.setImage(new Image(customer.getLogo()));
@@ -158,7 +161,6 @@ public class CustomerEditDialogController {
 	private void handleOk() {
 		if (isInputValid()) {
 			customer.setName(nameField.getText());
-			namesSet.add(nameField.getText());
 
 			if (townField.getSelectionModel() != null) {
 				customer.setTown(townField.getSelectionModel().getSelectedItem());
@@ -172,15 +174,16 @@ public class CustomerEditDialogController {
 				customer.setNotes(notesField.getText());
 			}
 
-			if (contractField.getText() != null) {
-				customer.setContract(contractField.getText());
-			}
+			// if (contractField.getText() != null) {
+			// customer.setContract(contractField.getText());
+			// }
 
 			if (!logoFileChooserButton.getText().equalsIgnoreCase("Избери Лого")) {
 				customer.setLogo(logoFileChooserButton.getText());
 			}
 
 			okClicked = true;
+			ValidationUtil.getNamesset().add(nameField.getText().toLowerCase());
 			dialogStage.close();
 		}
 	}
@@ -205,7 +208,7 @@ public class CustomerEditDialogController {
 			return false;
 		}
 
-		if (namesSet.contains(name)) {
+		if (ValidationUtil.getNamesset().contains(name.trim().toLowerCase())) {
 			errorMessage += "Това име вече е добавено в списъка - " + name + "\n";
 		}
 
@@ -220,7 +223,13 @@ public class CustomerEditDialogController {
 
 		// Date of Signing the contract Validation
 		if (contractSignDate != null && !DateUtil.validDate(contractSignDate) && !contractSignDate.equals("")) {
-			errorMessage += "Невалидна дата. Използвайте формат дд.мм.гггг!\n";
+			if (contractSignDate.length() == 5) {
+				int currentYear = LocalDate.now().getYear();
+				contractSignDateField.setText(contractSignDate + "." + currentYear);
+			} else {
+				errorMessage += "Невалидна дата. Използвайте формат дд.мм.гггг!\n";
+			}
+			
 		}
 
 		if (errorMessage.length() == 0) {
@@ -260,7 +269,8 @@ public class CustomerEditDialogController {
 			String contractName = FileUtil.getContractName(file.toURI().toString());
 			String contractFilePath = FileUtil.parseFilePath(file.toURI().toString());
 
-			this.contractsMap.put(contractName, contractFilePath);
+			ValidationUtil.getContractsmap().put(contractFilePath, contractName);
+			customer.setContract(contractFilePath);
 
 			contractField.setText(contractName);
 			contractField.setAlignment(Pos.CENTER);

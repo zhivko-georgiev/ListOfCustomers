@@ -11,6 +11,8 @@ import javax.xml.bind.Unmarshaller;
 import bg.sirma.listOfCustomers.models.Customer;
 import bg.sirma.listOfCustomers.models.CustomerListWrapper;
 import bg.sirma.listOfCustomers.utils.AlertUtil;
+import bg.sirma.listOfCustomers.utils.FileUtil;
+import bg.sirma.listOfCustomers.utils.ValidationUtil;
 import bg.sirma.listOfCustomers.views.CustomerEditDialogController;
 import bg.sirma.listOfCustomers.views.CustomerOverviewController;
 import bg.sirma.listOfCustomers.views.RootLayoutController;
@@ -51,7 +53,7 @@ public class MainApp extends Application {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle(APP_TITLE);
 
-		this.primaryStage.getIcons().add(new Image("file:resources/images/address_book_32.png"));
+		this.primaryStage.getIcons().add(new Image("file:resources/images/User-Group-icon.png"));
 
 		initRootLayout();
 
@@ -121,7 +123,7 @@ public class MainApp extends Application {
 			controller.setDialogStage(dialogStage);
 			controller.setCustomer(customer);
 
-			dialogStage.getIcons().add(new Image("file:resources/images/edit.png"));
+			dialogStage.getIcons().add(new Image("file:resources/images/edit-icon.png"));
 
 			dialogStage.showAndWait();
 
@@ -166,6 +168,11 @@ public class MainApp extends Application {
 
 			customersData.clear();
 			customersData.addAll(wrapper.getCustomers());
+			
+			for (Customer customer : customersData) {
+				ValidationUtil.getContractsmap().put(customer.getContract(), FileUtil.getContractName(customer.getContract()));
+				ValidationUtil.getNamesset().add(customer.getName());
+			}
 
 			setCustomerFilePath(file);
 

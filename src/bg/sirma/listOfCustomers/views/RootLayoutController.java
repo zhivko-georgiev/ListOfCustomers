@@ -8,63 +8,62 @@ import javafx.stage.FileChooser;
 
 public class RootLayoutController {
 
-    private MainApp mainApp;
+	private MainApp mainApp;
 
-    public void setMainApp(MainApp mainApp) {
-        this.mainApp = mainApp;
-    }
+	public void setMainApp(MainApp mainApp) {
+		this.mainApp = mainApp;
+	}
 
-    @FXML
-    private void handleNew() {
-        mainApp.getCustomerData().clear();
-        mainApp.setCustomerFilePath(null);
-    }
+	@FXML
+	private void handleNew() {
+		mainApp.getCustomerData().clear();
+		mainApp.showCustomerOverview();
+		mainApp.setCustomerFilePath(null);
+	}
 
-    @FXML
-    private void handleOpen() {
-        FileChooser fileChooser = new FileChooser();
+	@FXML
+	private void handleOpen() {
+		FileChooser fileChooser = new FileChooser();
 
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
-                "XML files (*.xml)", "*.xml");
-        fileChooser.getExtensionFilters().add(extFilter);
+		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml");
+		fileChooser.getExtensionFilters().add(extFilter);
 
-        File file = fileChooser.showOpenDialog(mainApp.getPrimaryStage());
+		File file = fileChooser.showOpenDialog(mainApp.getPrimaryStage());
 
-        if (file != null) {
-            mainApp.loadCustomerDataFromFile(file);
-        }
-    }
+		if (file != null) {
+			mainApp.loadCustomerDataFromFile(file);
+		}
+	}
 
-    @FXML
-    private void handleSave() {
-        File customerFile = mainApp.getCustomerFilePath();
-        if (customerFile != null) {
-            mainApp.saveCustomerDataToFile(customerFile);
-        } else {
-            handleSaveAs();
-        }
-    }
+	@FXML
+	private void handleSave() {
+		File customerFile = mainApp.getCustomerFilePath();
+		if (customerFile != null) {
+			mainApp.saveCustomerDataToFile(customerFile);
+		} else {
+			handleSaveAs();
+		}
+	}
 
-    @FXML
-    private void handleSaveAs() {
-        FileChooser fileChooser = new FileChooser();
+	@FXML
+	private void handleSaveAs() {
+		FileChooser fileChooser = new FileChooser();
 
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
-                "XML files (*.xml)", "*.xml");
-        fileChooser.getExtensionFilters().add(extFilter);
+		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml");
+		fileChooser.getExtensionFilters().add(extFilter);
 
-        File file = fileChooser.showSaveDialog(mainApp.getPrimaryStage());
+		File file = fileChooser.showSaveDialog(mainApp.getPrimaryStage());
 
-        if (file != null) {
-            if (!file.getPath().endsWith(".xml")) {
-                file = new File(file.getPath() + ".xml");
-            }
-            mainApp.saveCustomerDataToFile(file);
-        }
-    }
+		if (file != null) {
+			if (!file.getPath().endsWith(".xml")) {
+				file = new File(file.getPath() + ".xml");
+			}
+			mainApp.saveCustomerDataToFile(file);
+		}
+	}
 
-    @FXML
-    private void handleExit() {
-        System.exit(0);
-    }
+	@FXML
+	private void handleExit() {
+		System.exit(0);
+	}
 }

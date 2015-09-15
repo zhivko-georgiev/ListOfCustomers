@@ -24,9 +24,8 @@ public class FileUtil {
 	
 	public static String getContractName(String filename) {
 		int startIndex = filename.lastIndexOf('/');
-		int lastIndex = filename.lastIndexOf('.');
 		
-		String extractedFileName = filename.substring(startIndex + 1 , lastIndex);
+		String extractedFileName = filename.substring(startIndex + 1 , filename.length());
 		
 		extractedFileName = extractedFileName.replace("%20", " ");
 		
