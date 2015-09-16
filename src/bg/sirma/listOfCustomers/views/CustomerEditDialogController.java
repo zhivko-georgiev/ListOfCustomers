@@ -18,6 +18,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -35,7 +36,7 @@ public class CustomerEditDialogController {
 	@FXML
 	private TextField contractSignDateField;
 	@FXML
-	private TextField notesField;
+	private TextArea notesField;
 	@FXML
 	private Hyperlink contractField;
 	@FXML
@@ -56,6 +57,13 @@ public class CustomerEditDialogController {
 		removeCurrentContractBtn.setVisible(false);
 		ObservableList<City> cities = FXCollections.observableArrayList(City.values());
 		townField.setItems(cities);
+		
+		contractSignDateField.setOnInputMethodTextChanged((event) -> {
+			if (contractSignDateField.getText().length() == 5) {
+				int currentYear = LocalDate.now().getYear();
+				contractSignDateField.setText(contractSignDateField.getText() + "." + currentYear);
+			}
+		});
 
 		townField.setOnKeyPressed((event) -> {
 			String keyPressed = event.getText();
@@ -87,12 +95,17 @@ public class CustomerEditDialogController {
 
 		customerEditDialogLogo.setOnMouseClicked((event) -> {
 			try {
-				String imageUrl = FileUtil.parseFilePath(customer.getLogo());
 				String noLogoUrl = FileUtil.parseFilePath(NO_LOGO_IMAGE);
 				
-				if (FileUtil.fileExists(customer.getLogo())) {
-					if (!imageUrl.contains("No-Logo-Available.png")) {
-						Desktop.getDesktop().open(new File(imageUrl));
+				if (customer.getLogo() != null) {
+					String imageUrl = FileUtil.parseFilePath(customer.getLogo());
+					
+					if (FileUtil.fileExists(customer.getLogo())) {
+						if (!imageUrl.contains("No-Logo-Available.png")) {
+							Desktop.getDesktop().open(new File(imageUrl));
+						} else {
+							Desktop.getDesktop().open(new File(noLogoUrl));
+						}
 					} else {
 						Desktop.getDesktop().open(new File(noLogoUrl));
 					}
@@ -100,7 +113,6 @@ public class CustomerEditDialogController {
 					Desktop.getDesktop().open(new File(noLogoUrl));
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		});
@@ -118,7 +130,7 @@ public class CustomerEditDialogController {
 			} catch (IOException e) {
 				AlertUtil.errorAlertFile("Файлът не съществува", customer.getContract());
 				removeCurrentContract();
-				//e.printStackTrace();
+				e.printStackTrace();
 			}
 		});
 
@@ -137,13 +149,6 @@ public class CustomerEditDialogController {
 		removeCurrentContractBtn.setOnMouseClicked((event) -> {
 			removeCurrentContract();
 		});
-	}
-
-	@FXML
-	private void removeCurrentContract() {
-		customer.setContract(null);
-		removeCurrentContractBtn.setVisible(false);
-		contractFileChooserBtn.setVisible(true);
 	}
 
 	public void setDialogStage(Stage dialogStage) {
@@ -197,9 +202,9 @@ public class CustomerEditDialogController {
 			// customer.setContract(contractField.getText());
 			// }
 
-//			if (!logoFileChooserBtn.getText().equalsIgnoreCase("Избери Лого")) {
-//				customer.setLogo(logoFileChooserBtn.getText());
-//			}
+			if (customer.getLogo() == null) {
+				customer.setLogo(NO_LOGO_IMAGE);
+			}
 
 			okClicked = true;
 			CollectionsUtil.getNamesset().add(nameField.getText().toLowerCase());
@@ -219,7 +224,6 @@ public class CustomerEditDialogController {
 		String notes = notesField.getText();
 		String contractSignDate = contractSignDateField.getText();
 
-		// Name Validation
 		if (name == null || name.length() == 0) {
 			errorMessage += "Име е задължително поле!\n";
 
@@ -235,12 +239,10 @@ public class CustomerEditDialogController {
 			errorMessage += "Име трябва да е с дължина до 50 символа!\n";
 		}
 
-		// Notes Validation
 		if (notes != null && notes.length() > 2000) {
 			errorMessage += "Бележки трябва да е с дължина до 2000 символа!\n";
 		}
 
-		// Date of Signing the contract Validation
 		if (contractSignDate != null && !DateUtil.validDate(contractSignDate) && !contractSignDate.equals("")) {
 			if (contractSignDate.length() == 5) {
 				int currentYear = LocalDate.now().getYear();
@@ -253,7 +255,6 @@ public class CustomerEditDialogController {
 		if (errorMessage.length() == 0) {
 			return true;
 		} else {
-			// Show the error message.
 			AlertUtil.errorAlertEditCustomer(errorMessage, dialogStage);
 
 			return false;
@@ -294,7 +295,13 @@ public class CustomerEditDialogController {
 			
 			removeCurrentContractBtn.setVisible(true);
 			contractFileChooserBtn.setVisible(false);
-			
 		}
+	}
+	
+	@FXML
+	private void removeCurrentContract() {
+		customer.setContract(null);
+		removeCurrentContractBtn.setVisible(false);
+		contractFileChooserBtn.setVisible(true);
 	}
 }

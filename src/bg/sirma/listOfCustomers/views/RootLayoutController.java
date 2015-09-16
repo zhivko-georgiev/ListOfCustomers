@@ -7,7 +7,6 @@ import javafx.fxml.FXML;
 import javafx.stage.FileChooser;
 
 public class RootLayoutController {
-
 	private MainApp mainApp;
 
 	public void setMainApp(MainApp mainApp) {

@@ -18,7 +18,7 @@ import javafx.scene.image.ImageView;
 
 public class CustomerOverviewController {
 	private static final String NO_LOGO_IMAGE = "file:resources/images/No-Logo-Available.png";
-	
+
 	private MainApp mainApp;
 
 	@FXML
@@ -133,9 +133,7 @@ public class CustomerOverviewController {
 			if (okClicked) {
 				showCustomerDetails(selectedCustomer);
 			}
-
 		} else {
-			// Nothing selected.
 			AlertUtil.warningAlertNoCustomerSelected(mainApp.getPrimaryStage());
 		}
 	}

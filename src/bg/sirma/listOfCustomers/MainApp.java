@@ -142,12 +142,10 @@ public class MainApp extends Application {
 		if (file != null) {
 			prefs.put("filePath", file.getPath());
 
-			// Update the stage title.
 			primaryStage.setTitle(APP_TITLE + " - " + file.getName());
 		} else {
 			prefs.remove("filePath");
 
-			// Update the stage title.
 			primaryStage.setTitle(APP_TITLE);
 		}
 	}
