@@ -8,9 +8,9 @@ import java.time.LocalDate;
 import bg.sirma.listOfCustomers.models.City;
 import bg.sirma.listOfCustomers.models.Customer;
 import bg.sirma.listOfCustomers.utils.AlertUtil;
+import bg.sirma.listOfCustomers.utils.CollectionsUtil;
 import bg.sirma.listOfCustomers.utils.DateUtil;
 import bg.sirma.listOfCustomers.utils.FileUtil;
-import bg.sirma.listOfCustomers.utils.ValidationUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -109,10 +109,16 @@ public class CustomerEditDialogController {
 			try {
 				String contractFilePath = customer.getContract();
 
-				Desktop.getDesktop().open(new File(contractFilePath));
+				if (FileUtil.fileExists(contractFilePath)) {
+					Desktop.getDesktop().open(new File(contractFilePath));
+				} else {
+					throw new IOException();
+				}
+				
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				AlertUtil.errorAlertFile("Файлът не съществува", customer.getContract());
+				removeCurrentContract();
+				//e.printStackTrace();
 			}
 		});
 
@@ -157,7 +163,7 @@ public class CustomerEditDialogController {
 			contractFileChooserBtn.setVisible(false);
 			removeCurrentContractBtn.setVisible(true);
 		}
-		contractField.setText(ValidationUtil.getContractsmap().get(customer.getContract()));
+		contractField.setText(CollectionsUtil.getContractsmap().get(customer.getContract()));
 
 		if (customer.getLogo() != null && FileUtil.fileExists(customer.getLogo())) {
 			customerEditDialogLogo.setImage(new Image(customer.getLogo()));
@@ -191,12 +197,12 @@ public class CustomerEditDialogController {
 			// customer.setContract(contractField.getText());
 			// }
 
-			if (!logoFileChooserBtn.getText().equalsIgnoreCase("Избери Лого")) {
-				customer.setLogo(logoFileChooserBtn.getText());
-			}
+//			if (!logoFileChooserBtn.getText().equalsIgnoreCase("Избери Лого")) {
+//				customer.setLogo(logoFileChooserBtn.getText());
+//			}
 
 			okClicked = true;
-			ValidationUtil.getNamesset().add(nameField.getText().toLowerCase());
+			CollectionsUtil.getNamesset().add(nameField.getText().toLowerCase());
 			dialogStage.close();
 		}
 	}
@@ -221,7 +227,7 @@ public class CustomerEditDialogController {
 			return false;
 		}
 
-		if (ValidationUtil.getNamesset().contains(name.trim().toLowerCase())) {
+		if (CollectionsUtil.getNamesset().contains(name.trim().toLowerCase())) {
 			errorMessage += "Това име вече е добавено в списъка - " + name + "\n";
 		}
 
@@ -266,8 +272,7 @@ public class CustomerEditDialogController {
 
 		if (file != null) {
 			customerEditDialogLogo.setImage(new Image(file.toURI().toString()));
-			logoFileChooserBtn.setText(file.toURI().toString());
-			logoFileChooserBtn.setVisible(false);
+			customer.setLogo(file.toURI().toString());
 		}
 	}
 
@@ -281,7 +286,7 @@ public class CustomerEditDialogController {
 			String contractName = FileUtil.getContractName(file.toURI().toString());
 			String contractFilePath = FileUtil.parseFilePath(file.toURI().toString());
 
-			ValidationUtil.getContractsmap().put(contractFilePath, contractName);
+			CollectionsUtil.getContractsmap().put(contractFilePath, contractName);
 			customer.setContract(contractFilePath);
 
 			contractField.setText(contractName);

@@ -7,7 +7,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 import javafx.collections.ObservableSet;
 
-public class ValidationUtil {
+public class CollectionsUtil {
 	private static final ObservableSet<String> namesSet = FXCollections.observableSet(new HashSet<String>());
 	private static final ObservableMap<String, String> contractsMap = FXCollections.observableMap(new HashMap<>());
 

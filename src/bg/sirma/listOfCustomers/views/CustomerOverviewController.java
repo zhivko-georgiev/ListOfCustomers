@@ -6,9 +6,9 @@ import bg.sirma.listOfCustomers.MainApp;
 import bg.sirma.listOfCustomers.models.City;
 import bg.sirma.listOfCustomers.models.Customer;
 import bg.sirma.listOfCustomers.utils.AlertUtil;
+import bg.sirma.listOfCustomers.utils.CollectionsUtil;
 import bg.sirma.listOfCustomers.utils.DateUtil;
 import bg.sirma.listOfCustomers.utils.FileUtil;
-import bg.sirma.listOfCustomers.utils.ValidationUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -18,6 +18,8 @@ import javafx.scene.image.ImageView;
 
 public class CustomerOverviewController {
 	private static final String NO_LOGO_IMAGE = "file:resources/images/No-Logo-Available.png";
+	
+	private MainApp mainApp;
 
 	@FXML
 	private TableView<Customer> customerTable;
@@ -42,11 +44,6 @@ public class CustomerOverviewController {
 	private Label contractLabel;
 	@FXML
 	private ImageView logoImage;
-
-	private MainApp mainApp;
-
-	public CustomerOverviewController() {
-	}
 
 	@FXML
 	private void initialize() {
@@ -90,7 +87,7 @@ public class CustomerOverviewController {
 			}
 
 			if (customer.getContract() != null) {
-				contractLabel.setText(ValidationUtil.getContractsmap().get(customer.getContract()));
+				contractLabel.setText(CollectionsUtil.getContractsmap().get(customer.getContract()));
 			} else {
 				contractLabel.setText("");
 			}
@@ -107,9 +104,9 @@ public class CustomerOverviewController {
 	private void handleDeleteCustomer() {
 		int selectedIndex = customerTable.getSelectionModel().getSelectedIndex();
 		if (selectedIndex >= 0) {
-			ValidationUtil.getNamesset()
+			CollectionsUtil.getNamesset()
 					.remove(customerTable.getSelectionModel().getSelectedItem().getName().toLowerCase());
-			ValidationUtil.getContractsmap().remove(customerTable.getSelectionModel().getSelectedItem().getContract());
+			CollectionsUtil.getContractsmap().remove(customerTable.getSelectionModel().getSelectedItem().getContract());
 			customerTable.getItems().remove(selectedIndex);
 		} else {
 			// Nothing selected.
@@ -130,7 +127,7 @@ public class CustomerOverviewController {
 	private void handleEditCustomer() {
 		Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
 		if (selectedCustomer != null) {
-			ValidationUtil.getNamesset().remove(selectedCustomer.getName().toLowerCase());
+			CollectionsUtil.getNamesset().remove(selectedCustomer.getName().toLowerCase());
 			boolean okClicked = mainApp.showCustomerEditDialog(selectedCustomer);
 
 			if (okClicked) {

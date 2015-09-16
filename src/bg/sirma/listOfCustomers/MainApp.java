@@ -11,8 +11,8 @@ import javax.xml.bind.Unmarshaller;
 import bg.sirma.listOfCustomers.models.Customer;
 import bg.sirma.listOfCustomers.models.CustomerListWrapper;
 import bg.sirma.listOfCustomers.utils.AlertUtil;
+import bg.sirma.listOfCustomers.utils.CollectionsUtil;
 import bg.sirma.listOfCustomers.utils.FileUtil;
-import bg.sirma.listOfCustomers.utils.ValidationUtil;
 import bg.sirma.listOfCustomers.views.CustomerEditDialogController;
 import bg.sirma.listOfCustomers.views.CustomerOverviewController;
 import bg.sirma.listOfCustomers.views.RootLayoutController;
@@ -77,27 +77,20 @@ public class MainApp extends Application {
 			e.printStackTrace();
 		}
 
-		// Try to load last opened person file.
 		File file = getCustomerFilePath();
 		if (file != null) {
 			loadCustomerDataFromFile(file);
 		}
 	}
 
-	/**
-	 * Shows the person overview inside the root layout.
-	 */
 	public void showCustomerOverview() {
 		try {
-			// Load person overview.
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(MainApp.class.getResource("views/CustomerOverview.fxml"));
 			AnchorPane customerOverview = (AnchorPane) loader.load();
 
-			// Set person overview into the center of root layout.
 			rootLayout.setCenter(customerOverview);
 
-			// Give the controller access to the main app.
 			CustomerOverviewController controller = loader.getController();
 			controller.setMainApp(this);
 
@@ -171,10 +164,10 @@ public class MainApp extends Application {
 			
 			for (Customer customer : customersData) {
 				if (customer.getContract() != null) {
-					ValidationUtil.getContractsmap().put(customer.getContract(), FileUtil.getContractName(customer.getContract()));
+					CollectionsUtil.getContractsmap().put(customer.getContract(), FileUtil.getContractName(customer.getContract()));
 				}
 				
-				ValidationUtil.getNamesset().add(customer.getName());
+				CollectionsUtil.getNamesset().add(customer.getName());
 			}
 
 			setCustomerFilePath(file);
