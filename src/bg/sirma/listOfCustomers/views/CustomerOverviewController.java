@@ -1,7 +1,5 @@
 package bg.sirma.listOfCustomers.views;
 
-import java.time.LocalDate;
-
 import bg.sirma.listOfCustomers.MainApp;
 import bg.sirma.listOfCustomers.models.City;
 import bg.sirma.listOfCustomers.models.Customer;
@@ -9,6 +7,7 @@ import bg.sirma.listOfCustomers.utils.AlertUtil;
 import bg.sirma.listOfCustomers.utils.CollectionsUtil;
 import bg.sirma.listOfCustomers.utils.DateUtil;
 import bg.sirma.listOfCustomers.utils.FileUtil;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -28,7 +27,7 @@ public class CustomerOverviewController {
 	@FXML
 	private TableColumn<Customer, City> townColumn;
 	@FXML
-	private TableColumn<Customer, LocalDate> contractSignDateColumn;
+	private TableColumn<Customer, String> contractSignDateColumn;
 	@FXML
 	private TableColumn<Customer, String> notesColumn;
 
@@ -49,7 +48,13 @@ public class CustomerOverviewController {
 	private void initialize() {
 		nameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
 		townColumn.setCellValueFactory(cellData -> cellData.getValue().townProperty());
-		contractSignDateColumn.setCellValueFactory(cellData -> cellData.getValue().contractSignDateProperty());
+		contractSignDateColumn.setCellValueFactory(cellData -> {
+			SimpleStringProperty property = new SimpleStringProperty();
+			String date = cellData.getValue().contractSignDateProperty().getValue().format(DateUtil.DATE_FORMATTER);
+			property.setValue(date);
+
+			return property;
+		});
 		notesColumn.setCellValueFactory(cellData -> cellData.getValue().notesProperty());
 
 		showCustomerDetails(null);
