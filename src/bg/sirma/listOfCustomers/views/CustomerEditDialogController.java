@@ -55,10 +55,6 @@ public class CustomerEditDialogController {
 
 	@FXML
 	private void initialize() {
-		removeCurrentContractBtn.setVisible(false);
-		ObservableList<City> cities = FXCollections.observableArrayList(City.values());
-		townField.setItems(cities);
-
 		contractSignDateField.focusedProperty().addListener(listener -> {
 			if (contractSignDateField.getText() != null && contractSignDateField.getText() != "") {
 				String[] splittedDate = contractSignDateField.getText().split(Pattern.quote("."));
@@ -98,6 +94,9 @@ public class CustomerEditDialogController {
 				}
 			}
 		});
+		
+		ObservableList<City> cities = FXCollections.observableArrayList(City.values());
+		townField.setItems(cities);
 
 		townField.setOnKeyPressed((event) -> {
 			String keyPressed = event.getText();
@@ -151,12 +150,12 @@ public class CustomerEditDialogController {
 			}
 		});
 
+		removeCurrentContractBtn.setVisible(false);
+
 		contractField.setOnAction((event) -> {
 			try {
 				String contractFilePath = customer.getContract();
-				System.out.println(contractFilePath);
-				System.out.println(FileUtil.fileExists(contractFilePath));
-
+				
 				if (FileUtil.fileExists(contractFilePath)) {
 					Desktop.getDesktop().open(new File(contractFilePath));
 				} else {

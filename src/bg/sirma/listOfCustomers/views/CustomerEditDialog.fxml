@@ -55,7 +55,8 @@
 				<TextField fx:id="contractSignDateField" prefWidth="358.0"
 					GridPane.columnIndex="1" GridPane.rowIndex="2" />
 				<TextArea fx:id="notesField" prefHeight="77.0" prefWidth="358.0"
-					GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.rowSpan="2" wrapText="true" />
+					GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.rowSpan="2"
+					wrapText="true" />
 				<Hyperlink fx:id="contractField" alignment="center"
 					prefHeight="34.0" prefWidth="152.0" GridPane.columnIndex="1"
 					GridPane.rowIndex="5" />
