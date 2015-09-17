@@ -4,6 +4,7 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.regex.Pattern;
 
 import bg.sirma.listOfCustomers.models.City;
 import bg.sirma.listOfCustomers.models.Customer;
@@ -57,11 +58,44 @@ public class CustomerEditDialogController {
 		removeCurrentContractBtn.setVisible(false);
 		ObservableList<City> cities = FXCollections.observableArrayList(City.values());
 		townField.setItems(cities);
-		
-		contractSignDateField.setOnInputMethodTextChanged((event) -> {
-			if (contractSignDateField.getText().length() == 5) {
-				int currentYear = LocalDate.now().getYear();
-				contractSignDateField.setText(contractSignDateField.getText() + "." + currentYear);
+
+		contractSignDateField.focusedProperty().addListener(listener -> {
+			if (contractSignDateField.getText() != null && contractSignDateField.getText() != "") {
+				String[] splittedDate = contractSignDateField.getText().split(Pattern.quote("."));
+				if (splittedDate.length != 0) {
+					int day = Integer.parseInt(splittedDate[0]);
+					int month = Integer.parseInt(splittedDate[1]);
+
+					String finalDate = "";
+
+					if (day >= 1 && day <= 9) {
+						finalDate += "0" + day + ".";
+					} else {
+						finalDate += day + ".";
+					}
+
+					if (month >= 1 && month <= 9) {
+						finalDate += "0" + month + ".";
+					} else {
+						finalDate += month + ".";
+					}
+					
+					if (splittedDate.length > 2) {
+						int year = Integer.parseInt(splittedDate[2]);
+						finalDate += year;
+					} else {
+						int currentYear = LocalDate.now().getYear();
+						finalDate += currentYear;
+					}
+
+					if (DateUtil.validDate(finalDate)) {
+						contractSignDateField.setText(finalDate);
+						customer.setContractSignDate(DateUtil.parse(finalDate));
+					} else {
+						contractSignDateField.setText("");
+						AlertUtil.errorAlertEditCustomer("Невалидна дата. Използвайте формат дд.мм.гггг!\n", dialogStage);
+					}
+				}
 			}
 		});
 
@@ -96,10 +130,10 @@ public class CustomerEditDialogController {
 		customerEditDialogLogo.setOnMouseClicked((event) -> {
 			try {
 				String noLogoUrl = FileUtil.parseFilePath(NO_LOGO_IMAGE);
-				
+
 				if (customer.getLogo() != null) {
 					String imageUrl = FileUtil.parseFilePath(customer.getLogo());
-					
+
 					if (FileUtil.fileExists(customer.getLogo())) {
 						if (!imageUrl.contains("No-Logo-Available.png")) {
 							Desktop.getDesktop().open(new File(imageUrl));
@@ -120,13 +154,15 @@ public class CustomerEditDialogController {
 		contractField.setOnAction((event) -> {
 			try {
 				String contractFilePath = customer.getContract();
+				System.out.println(contractFilePath);
+				System.out.println(FileUtil.fileExists(contractFilePath));
 
 				if (FileUtil.fileExists(contractFilePath)) {
 					Desktop.getDesktop().open(new File(contractFilePath));
 				} else {
 					throw new IOException();
 				}
-				
+
 			} catch (IOException e) {
 				AlertUtil.errorAlertFile("Файлът не съществува", customer.getContract());
 				removeCurrentContract();
@@ -135,14 +171,16 @@ public class CustomerEditDialogController {
 		});
 
 		contractSignDateField.setOnKeyPressed((event) -> {
-			if (event.getCode() == KeyCode.DOWN && event.isControlDown()) {
+			if (contractSignDateField.getText() != null) {
+				if (event.getCode() == KeyCode.DOWN && event.isControlDown()) {
 
-				customer.setContractSignDate(DateUtil.parse(contractSignDateField.getText()).plusDays(1));
-				contractSignDateField.setText(DateUtil.format(customer.getContractSignDate()));
+					customer.setContractSignDate(DateUtil.parse(contractSignDateField.getText()).minusDays(1));
+					contractSignDateField.setText(DateUtil.format(customer.getContractSignDate()));
 
-			} else if (event.getCode() == KeyCode.UP && event.isControlDown()) {
-				customer.setContractSignDate(DateUtil.parse(contractSignDateField.getText()).minusDays(1));
-				contractSignDateField.setText(DateUtil.format(customer.getContractSignDate()));
+				} else if (event.getCode() == KeyCode.UP && event.isControlDown()) {
+					customer.setContractSignDate(DateUtil.parse(contractSignDateField.getText()).plusDays(1));
+					contractSignDateField.setText(DateUtil.format(customer.getContractSignDate()));
+				}
 			}
 		});
 
@@ -244,12 +282,13 @@ public class CustomerEditDialogController {
 		}
 
 		if (contractSignDate != null && !DateUtil.validDate(contractSignDate) && !contractSignDate.equals("")) {
-			if (contractSignDate.length() == 5) {
-				int currentYear = LocalDate.now().getYear();
-				contractSignDateField.setText(contractSignDate + "." + currentYear);
-			} else {
-				errorMessage += "Невалидна дата. Използвайте формат дд.мм.гггг!\n";
-			}
+			// if (contractSignDate.length() == 5) {
+			// int currentYear = LocalDate.now().getYear();
+			// contractSignDateField.setText(contractSignDate + "." +
+			// currentYear);
+			// } else {
+			errorMessage += "Невалидна дата. Използвайте формат дд.мм.гггг!\n";
+			// }
 		}
 
 		if (errorMessage.length() == 0) {
@@ -292,12 +331,12 @@ public class CustomerEditDialogController {
 
 			contractField.setText(contractName);
 			contractField.setAlignment(Pos.CENTER);
-			
+
 			removeCurrentContractBtn.setVisible(true);
 			contractFileChooserBtn.setVisible(false);
 		}
 	}
-	
+
 	@FXML
 	private void removeCurrentContract() {
 		customer.setContract(null);

@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import bg.sirma.listOfCustomers.utils.DateUtil;
 import bg.sirma.listOfCustomers.utils.LocalDateAdapter;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -14,27 +13,27 @@ public class Customer {
 	private final SimpleObjectProperty<City> town;
 	private final SimpleObjectProperty<LocalDate> contractSignDate;
 	private final SimpleStringProperty notes;
-	private final SimpleStringProperty contract;
-	private final SimpleStringProperty logo;
+	private final SimpleStringProperty contractFilePath;
+	private final SimpleStringProperty logoFilePath;
 
-	public Customer(String name, String... params) {
+	public Customer(String name, City town, LocalDate contractSignDate, String notes, String contractFilePath, String logoFilePath) {
 		this.name = new SimpleStringProperty(name);
 
-		City town = params.length > 0 ? City.valueOf(params[0]) : null;
-		String contractSignDate = params.length > 1 ? params[1] : LocalDate.now().toString();
-		String notes = params.length > 2 ? params[2] : null;
-		String contract = params.length > 3 ? params[3] : null;
-		String logo = params.length > 4 ? params[4] : null;
+		City parsedTown = town != null ? town : null;
+		LocalDate parsedContractSignDate = contractSignDate != null ? contractSignDate : null;
+		String parsedNotes = notes != null ? notes : null;
+		String parsedContractFilePath = contractFilePath != null ? contractFilePath : null;
+		String parsedLogoFilePath = logoFilePath != null ? logoFilePath : null;
 
-		this.town = new SimpleObjectProperty<City>(town);
-		this.contractSignDate = new SimpleObjectProperty<LocalDate>(DateUtil.parse(contractSignDate));
-		this.notes = new SimpleStringProperty(notes);
-		this.contract = new SimpleStringProperty(contract);
-		this.logo = new SimpleStringProperty(logo);
+		this.town = new SimpleObjectProperty<City>(parsedTown);
+		this.contractSignDate = new SimpleObjectProperty<LocalDate>(parsedContractSignDate);
+		this.notes = new SimpleStringProperty(parsedNotes);
+		this.contractFilePath = new SimpleStringProperty(parsedContractFilePath);
+		this.logoFilePath = new SimpleStringProperty(parsedLogoFilePath);
 	}
 	
 	public Customer() {
-		this(null);
+		this(null, null, null, null, null, null);
 	}
 
 	public String getName() {
@@ -87,26 +86,26 @@ public class Customer {
 	}
 
 	public String getContract() {
-		return contract.get();
+		return contractFilePath.get();
 	}
 
 	public void setContract(String contract) {
-		this.contract.set(contract);
+		this.contractFilePath.set(contract);
 	}
 
 	public SimpleStringProperty contractProperty() {
-		return contract;
+		return contractFilePath;
 	}
 
 	public String getLogo() {
-		return logo.get();
+		return logoFilePath.get();
 	}
 
 	public void setLogo(String logo) {
-		this.logo.set(logo);
+		this.logoFilePath.set(logo);
 	}
 
 	public SimpleStringProperty logoProperty() {
-		return logo;
+		return logoFilePath;
 	}
 }
