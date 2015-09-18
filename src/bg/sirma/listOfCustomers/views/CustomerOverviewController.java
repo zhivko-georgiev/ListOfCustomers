@@ -61,7 +61,7 @@ public class CustomerOverviewController {
 		customerTable.setRowFactory( tv -> {
 		    TableRow<Customer> row = new TableRow<>();
 		    row.setOnMouseClicked(event -> {
-		        if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+		        if (event.getClickCount() == 2 && (!row.isEmpty()) ) {
 		        	handleEditCustomer();
 		        }
 		    });

@@ -57,44 +57,45 @@ public class CustomerEditDialogController {
 	private void initialize() {
 		contractSignDateField.focusedProperty().addListener(listener -> {
 			if (contractSignDateField.getText() != null && contractSignDateField.getText() != "") {
-				String[] splittedDate = contractSignDateField.getText().split(Pattern.quote("."));
-				if (splittedDate.length != 0) {
-					int day = Integer.parseInt(splittedDate[0]);
-					int month = Integer.parseInt(splittedDate[1]);
+				if (contractSignDateField.getText().contains(".")) {
+					String[] splittedDate = contractSignDateField.getText().split(Pattern.quote("."));
 
-					String finalDate = "";
+					if (splittedDate.length > 1) {
 
-					if (day >= 1 && day <= 9) {
-						finalDate += "0" + day + ".";
-					} else {
-						finalDate += day + ".";
-					}
+						int day = Integer.parseInt(splittedDate[0]);
+						int month = Integer.parseInt(splittedDate[1]);
 
-					if (month >= 1 && month <= 9) {
-						finalDate += "0" + month + ".";
-					} else {
-						finalDate += month + ".";
-					}
-					
-					if (splittedDate.length > 2) {
-						int year = Integer.parseInt(splittedDate[2]);
-						finalDate += year;
-					} else {
-						int currentYear = LocalDate.now().getYear();
-						finalDate += currentYear;
-					}
+						String finalDate = "";
 
-					if (DateUtil.validDate(finalDate)) {
-						contractSignDateField.setText(finalDate);
-						customer.setContractSignDate(DateUtil.parse(finalDate));
-					} else {
-						contractSignDateField.setText("");
-						AlertUtil.errorAlertEditCustomer("Невалидна дата. Използвайте формат дд.мм.гггг!\n", dialogStage);
+						if (day >= 1 && day <= 9) {
+							finalDate += "0" + day + ".";
+						} else {
+							finalDate += day + ".";
+						}
+
+						if (month >= 1 && month <= 9) {
+							finalDate += "0" + month + ".";
+						} else {
+							finalDate += month + ".";
+						}
+
+						if (splittedDate.length > 2) {
+							int year = Integer.parseInt(splittedDate[2]);
+							finalDate += year;
+						} else {
+							int currentYear = LocalDate.now().getYear();
+							finalDate += currentYear;
+						}
+
+						if (DateUtil.validDate(finalDate)) {
+							contractSignDateField.setText(finalDate);
+							customer.setContractSignDate(DateUtil.parse(finalDate));
+						}
 					}
 				}
 			}
 		});
-		
+
 		ObservableList<City> cities = FXCollections.observableArrayList(City.values());
 		townField.setItems(cities);
 
@@ -155,7 +156,7 @@ public class CustomerEditDialogController {
 		contractField.setOnAction((event) -> {
 			try {
 				String contractFilePath = customer.getContract();
-				
+
 				if (FileUtil.fileExists(contractFilePath)) {
 					Desktop.getDesktop().open(new File(contractFilePath));
 				} else {
