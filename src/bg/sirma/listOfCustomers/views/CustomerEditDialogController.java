@@ -281,13 +281,7 @@ public class CustomerEditDialogController {
 		}
 
 		if (contractSignDate != null && !DateUtil.validDate(contractSignDate) && !contractSignDate.equals("")) {
-			// if (contractSignDate.length() == 5) {
-			// int currentYear = LocalDate.now().getYear();
-			// contractSignDateField.setText(contractSignDate + "." +
-			// currentYear);
-			// } else {
 			errorMessage += "Невалидна дата. Използвайте формат дд.мм.гггг!\n";
-			// }
 		}
 
 		if (errorMessage.length() == 0) {

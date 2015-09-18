@@ -12,6 +12,7 @@ import bg.sirma.listOfCustomers.utils.FileUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -56,6 +57,17 @@ public class CustomerOverviewController {
 
 		customerTable.getSelectionModel().selectedItemProperty()
 				.addListener((observable, oldValue, newValue) -> showCustomerDetails(newValue));
+
+		customerTable.setRowFactory( tv -> {
+		    TableRow<Customer> row = new TableRow<>();
+		    row.setOnMouseClicked(event -> {
+		        if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+		        	handleEditCustomer();
+		        }
+		    });
+		    return row ;
+		});
+
 	}
 
 	public void setMainApp(MainApp mainApp) {
@@ -115,7 +127,7 @@ public class CustomerOverviewController {
 
 	@FXML
 	private void handleNewCustomer() {
-		Customer tempCustomer = new Customer(null, null, null, null, null, null);
+		Customer tempCustomer = new Customer();
 		boolean okClicked = mainApp.showCustomerEditDialog(tempCustomer);
 		if (okClicked) {
 			mainApp.getCustomerData().add(tempCustomer);

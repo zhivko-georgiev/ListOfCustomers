@@ -83,7 +83,7 @@
 			AnchorPane.rightAnchor="10.0">
 			<buttons>
 				<Button defaultButton="true" mnemonicParsing="false"
-					onAction="#handleOk" text="OK" />
+					onAction="#handleOk" text="Запиши" />
 				<Button mnemonicParsing="false" onAction="#handleCancel"
 					prefWidth="120.0" text="Откажи" />
 			</buttons>

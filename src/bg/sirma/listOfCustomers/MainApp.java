@@ -165,7 +165,7 @@ public class MainApp extends Application {
 					CollectionsUtil.getContractsmap().put(customer.getContract(), FileUtil.getContractName(customer.getContract()));
 				}
 				
-				CollectionsUtil.getNamesset().add(customer.getName());
+				CollectionsUtil.getNamesset().add(customer.getName().toLowerCase());
 			}
 
 			setCustomerFilePath(file);
