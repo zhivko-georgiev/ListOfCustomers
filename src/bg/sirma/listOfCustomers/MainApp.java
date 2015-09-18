@@ -158,11 +158,18 @@ public class MainApp extends Application {
 			CustomerListWrapper wrapper = (CustomerListWrapper) um.unmarshal(file);
 
 			customersData.clear();
+			CollectionsUtil.getNamesset().clear();
+			CollectionsUtil.getContractsmap().clear();
+			
 			customersData.addAll(wrapper.getCustomers());
 			
 			for (Customer customer : customersData) {
 				if (customer.getContract() != null) {
 					CollectionsUtil.getContractsmap().put(customer.getContract(), FileUtil.getContractName(customer.getContract()));
+				}
+				
+				if (CollectionsUtil.getNamesset().contains(customer.getName().toLowerCase())) {
+					throw new IOException("Duplicated names in the input file");
 				}
 				
 				CollectionsUtil.getNamesset().add(customer.getName().toLowerCase());
@@ -171,6 +178,9 @@ public class MainApp extends Application {
 			setCustomerFilePath(file);
 
 		} catch (Exception e) {
+			customersData.clear();
+			CollectionsUtil.getNamesset().clear();
+			CollectionsUtil.getContractsmap().clear();
 			String errorMessage = "Не може да се зареди информация от файл.";
 			AlertUtil.errorAlertFile(errorMessage, file.getPath());
 		}
