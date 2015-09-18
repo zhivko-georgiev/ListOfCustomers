@@ -30,7 +30,7 @@ import javafx.stage.Stage;
 public class MainApp extends Application {
 	private static final String APP_TITLE = "Списък с Клиенти";
 	private static final String EDIT_DIALOG_TITLE = "Редактирай Клиент";
-
+	
 	private Stage primaryStage;
 	private BorderPane rootLayout;
 

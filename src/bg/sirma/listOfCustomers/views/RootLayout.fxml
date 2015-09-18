@@ -10,25 +10,25 @@
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
-          <Menu mnemonicParsing="false" text="File">
+          <Menu mnemonicParsing="false" text="Списък с Клиенти">
                <items>
-                  <MenuItem mnemonicParsing="false" onAction="#handleNew" text="New">
+                  <MenuItem mnemonicParsing="false" onAction="#handleNew" text="Нов">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
                   </MenuItem>
-                  <MenuItem mnemonicParsing="false" onAction="#handleOpen" text="Open...">
+                  <MenuItem mnemonicParsing="false" onAction="#handleOpen" text="Отвори...">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
                   </MenuItem>
-                  <MenuItem mnemonicParsing="false" onAction="#handleSave" text="Save">
+                  <MenuItem mnemonicParsing="false" onAction="#handleSave" text="Съхрани">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
                   </MenuItem>
-                  <MenuItem mnemonicParsing="false" onAction="#handleSaveAs" text="Save As..." />
-                  <MenuItem mnemonicParsing="false" onAction="#handleExit" text="Exit" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleSaveAs" text="Съхрани като..." />
+                  <MenuItem mnemonicParsing="false" onAction="#handleExit" text="Изход" />
                </items>
           </Menu>
           <Menu>

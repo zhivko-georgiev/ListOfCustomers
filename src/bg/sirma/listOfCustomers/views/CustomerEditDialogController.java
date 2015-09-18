@@ -100,18 +100,19 @@ public class CustomerEditDialogController {
 		townField.setItems(cities);
 
 		townField.setOnKeyPressed((event) -> {
-			String keyPressed = event.getText();
+			KeyCode keyPressed = event.getCode();
+
 			switch (keyPressed) {
-			case "1":
+			case DIGIT1:
 				townField.getSelectionModel().select(City.София);
 				break;
-			case "2":
+			case DIGIT2:
 				townField.getSelectionModel().select(City.Пловдив);
 				break;
-			case "3":
+			case DIGIT3:
 				townField.getSelectionModel().select(City.Варна);
 				break;
-			case "4":
+			case DIGIT4:
 				townField.getSelectionModel().select(City.Бургас);
 				break;
 			default:
